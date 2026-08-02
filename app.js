@@ -287,28 +287,38 @@ const initGame = () => {
         ctx.fillStyle = "rgba(0, 255, 65, 0.8)";
         ctx.fillText(`SCORE: ${score}`, 20, 30);
 
-        // Draw Player Ship (Cyberpunk Delta Shape)
+        // Draw Player Ship (Galaga Style Pixel Art)
         ctx.save();
         ctx.translate(player.x, player.y);
-        ctx.strokeStyle = '#00f3ff';
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#00f3ff';
-        ctx.beginPath();
-        ctx.moveTo(0, -15);
-        ctx.lineTo(15, 15);
-        ctx.lineTo(0, 5);
-        ctx.lineTo(-15, 15);
-        ctx.closePath();
-        ctx.stroke();
+        
+        // Ship Body (White)
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-6, -10, 12, 16);
+        ctx.fillRect(-2, -16, 4, 6);
+        
+        // Wings (Blue)
+        ctx.fillStyle = '#0055ff';
+        ctx.fillRect(-14, 0, 8, 10);
+        ctx.fillRect(6, 0, 8, 10);
+        ctx.fillRect(-18, 4, 4, 8);
+        ctx.fillRect(14, 4, 4, 8);
+        
+        // Wing Tips (Red)
+        ctx.fillStyle = '#ff003c';
+        ctx.fillRect(-18, -2, 4, 6);
+        ctx.fillRect(14, -2, 4, 6);
+        
+        // Cockpit (Cyan)
+        ctx.fillStyle = '#00f3ff';
+        ctx.fillRect(-4, -4, 8, 4);
+
         // Thruster
-        ctx.strokeStyle = '#ff003c';
-        ctx.shadowColor = '#ff003c';
-        ctx.beginPath();
-        ctx.moveTo(-5, 10);
-        ctx.lineTo(0, 15 + Math.random()*15);
-        ctx.lineTo(5, 10);
-        ctx.stroke();
+        if (Math.random() > 0.5) {
+            ctx.fillStyle = '#ff003c';
+            ctx.fillRect(-4, 6, 8, 6);
+            ctx.fillStyle = '#ffff00';
+            ctx.fillRect(-2, 6, 4, 4);
+        }
         ctx.restore();
 
         // Update & Draw Lasers
@@ -353,18 +363,37 @@ const initGame = () => {
                 if (e.type === 'fast') e.y += Math.cos(e.phase) * 1;
             }
 
-            // Draw Enemy (Diamond Shape)
-            ctx.strokeStyle = '#ff003c';
-            ctx.shadowColor = '#ff003c';
-            ctx.shadowBlur = 10;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(e.x, e.y - e.height/2);
-            ctx.lineTo(e.x + e.width/2, e.y);
-            ctx.lineTo(e.x, e.y + e.height/2);
-            ctx.lineTo(e.x - e.width/2, e.y);
-            ctx.closePath();
-            ctx.stroke();
+            // Draw Enemy (Galaga Style Bug)
+            ctx.save();
+            ctx.translate(e.x, e.y);
+            
+            if (e.type === 'fast') {
+                // Boss type (Blue and Red)
+                ctx.fillStyle = '#0055ff';
+                ctx.fillRect(-12, -8, 24, 16);
+                ctx.fillStyle = '#ff003c';
+                ctx.fillRect(-8, -12, 16, 4);
+                ctx.fillRect(-16, 0, 4, 12);
+                ctx.fillRect(12, 0, 4, 12);
+                // Eyes
+                ctx.fillStyle = '#ffff00';
+                ctx.fillRect(-6, -4, 4, 4);
+                ctx.fillRect(2, -4, 4, 4);
+            } else {
+                // Minion type (Red and Yellow)
+                ctx.fillStyle = '#ff003c';
+                ctx.fillRect(-10, -6, 20, 12);
+                ctx.fillStyle = '#ffff00';
+                ctx.fillRect(-6, -10, 12, 4);
+                ctx.fillRect(-14, -2, 4, 10);
+                ctx.fillRect(10, -2, 4, 10);
+                // Eyes
+                ctx.fillStyle = '#00f3ff';
+                ctx.fillRect(-4, -2, 2, 2);
+                ctx.fillRect(2, -2, 2, 2);
+            }
+            
+            ctx.restore();
             
             // Collision with Lasers
             for(let lIdx = lasers.length-1; lIdx >= 0; lIdx--) {
@@ -444,10 +473,26 @@ const initForm = () => {
     });
 };
 
+// --- CSS PARTICLES ---
+const initCSSParticles = () => {
+    const colors = ['#00f3ff', '#00ff41'];
+    for(let i=0; i<40; i++) {
+        let dust = document.createElement('div');
+        dust.className = 'floating-dust';
+        dust.style.left = Math.random() * 100 + 'vw';
+        dust.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        dust.style.animationDelay = '-' + (Math.random() * 20) + 's';
+        dust.style.background = colors[Math.floor(Math.random()*colors.length)];
+        dust.style.boxShadow = `0 0 8px ${dust.style.background}`;
+        document.body.appendChild(dust);
+    }
+};
+
 // --- INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => {
     initThreeJS();
     initCards();
     initGame();
     initForm();
+    initCSSParticles();
 });
