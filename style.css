@@ -1,0 +1,373 @@
+        :root {
+            --fuchsia: #ff00ff;
+            --cyan: #00ffff;
+            --yellow: #ffff00;
+            --bg: #050014;
+            --glass: rgba(10, 0, 30, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+            border: 1px solid var(--bg);
+            border-radius: 5px;
+        }
+
+        /* CRT EFFECTS */
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            animation: flicker 0.15s infinite;
+        }
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+        }
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9997;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 120%);
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            50% { opacity: 1; }
+            100% { opacity: 0.95; }
+        }
+
+        /* WEBGL BACKGROUND */
+        #webgl-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+        }
+
+        /* LAYOUT */
+        #app {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 0;
+            perspective: 1000px;
+        }
+
+        /* TYPOGRAPHY */
+        .text-glitch {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 
+                0 0 10px var(--cyan), 
+                0 0 20px var(--cyan), 
+                0 0 40px var(--fuchsia), 
+                0 0 80px var(--fuchsia);
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(0.8rem, 2vw, 1.2rem);
+            color: var(--yellow);
+            line-height: 2;
+            text-shadow: 2px 2px 0px var(--fuchsia);
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            text-align: center;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+        }
+
+        /* BUTTONS */
+        .btn-neon {
+            padding: 20px 40px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            color: var(--cyan);
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--cyan);
+            box-shadow: 0 0 15px var(--cyan), inset 0 0 15px rgba(0, 255, 255, 0.2);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        .btn-neon:hover {
+            background: var(--cyan);
+            color: var(--bg);
+            box-shadow: 0 0 40px var(--cyan), inset 0 0 20px var(--cyan);
+            transform: scale(1.05);
+        }
+
+        /* MINIGAME */
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            height: 500px;
+            border: 4px solid var(--fuchsia);
+            box-shadow: 0 0 30px var(--fuchsia), inset 0 0 20px rgba(255, 0, 255, 0.2);
+            background: rgba(5, 0, 20, 0.8);
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+        .game-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 50px var(--fuchsia), inset 0 0 30px rgba(255, 0, 255, 0.4);
+        }
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .game-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .game-overlay h3 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: var(--yellow);
+            text-shadow: 4px 4px var(--fuchsia);
+            margin-bottom: 20px;
+            animation: pulseText 1.5s infinite;
+        }
+        .game-overlay p {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        /* FEATURES CARDS */
+        .cards-grid {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+        .card {
+            background: var(--glass);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 40px 30px;
+            border-radius: 15px;
+            width: 320px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card:hover {
+            border-color: var(--fuchsia);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.4), inset 0 0 20px rgba(255, 0, 255, 0.2);
+            z-index: 10;
+        }
+        .card h3 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.1rem;
+            color: var(--cyan);
+            margin-bottom: 20px;
+            line-height: 1.4;
+            text-shadow: 0 0 10px var(--cyan);
+            transform: translateZ(30px);
+        }
+        .card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ccc;
+            transform: translateZ(20px);
+        }
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            transform: translateZ(40px);
+            color: var(--yellow);
+            text-shadow: 0 0 30px var(--yellow);
+            display: inline-block;
+        }
+
+        /* PRICING */
+        .pricing-box {
+            background: rgba(20, 0, 40, 0.6);
+            border: 3px solid var(--fuchsia);
+            padding: 60px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 0, 255, 0.3);
+            max-width: 700px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-box::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--cyan));
+            animation: rotateBorder 4s linear infinite;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        .price {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--yellow);
+            text-shadow: 0 0 20px var(--yellow), 0 0 40px var(--fuchsia);
+            margin: 30px 0;
+            display: inline-block;
+        }
+        .deposit {
+            font-size: 1.4rem;
+            color: var(--cyan);
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CONTACT FORM */
+        .form-container {
+            background: rgba(5, 0, 20, 0.8);
+            padding: 50px;
+            border-radius: 20px;
+            border: 1px solid var(--cyan);
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+            position: relative;
+            backdrop-filter: blur(15px);
+        }
+        .form-group {
+            margin-bottom: 30px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            color: var(--fuchsia);
+            text-shadow: 0 0 5px var(--fuchsia);
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            outline: none;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--yellow);
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.4);
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: var(--fuchsia);
+            border: none;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+            transition: all 0.3s;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+        .submit-btn:hover {
+            background: #fff;
+            color: var(--fuchsia);
+            box-shadow: 0 0 50px #fff;
+            transform: translateY(-2px);
+        }
+        .submit-btn:active {
+            transform: translateY(2px);
+        }
+
+        /* ANIMATIONS */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        @keyframes rotateBorder {
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 80px 0; }
+            .form-container { padding: 30px 20px; }
+            .pricing-box { padding: 40px 20px; }
+        }
