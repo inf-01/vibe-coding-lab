@@ -166,7 +166,7 @@ const initGame = () => {
         if(!isPlaying) {
             isPlaying = true;
             overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 200);
+            setTimeout(() => { overlay.style.display = 'none'; }, 200);
             startGameLoop();
         }
     };
@@ -174,7 +174,7 @@ const initGame = () => {
     const stopGameAction = () => {
         isPlaying = false;
         overlay.style.display = 'flex';
-        setTimeout(() => overlay.style.opacity = '1', 10);
+        setTimeout(() => { overlay.style.opacity = '1'; }, 10);
         cancelAnimationFrame(animationId);
     };
 
@@ -183,30 +183,38 @@ const initGame = () => {
     
     // Touch support for mobile start
     overlay.addEventListener('touchstart', startGameAction, {passive: false});
+    // Double tap to pause on canvas
+    canvas.addEventListener('dblclick', stopGameAction);
 
-    const player = { x: gWidth/2, y: gHeight - 40, width: 30, height: 30, vX: 0 };
+    const player = { x: gWidth/2, y: gHeight - 60, width: 30, height: 30, vX: 0 };
     const keys = {};
     let isTouching = false;
     let touchX = null;
 
     canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
+        if(isPlaying) e.preventDefault(); // Only prevent scroll if playing
         isTouching = true;
         const rect = canvas.getBoundingClientRect();
         touchX = e.touches[0].clientX - rect.left;
     }, {passive: false});
     
     canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
+        if(isPlaying) e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         touchX = e.touches[0].clientX - rect.left;
     }, {passive: false});
     
     canvas.addEventListener('touchend', (e) => {
-        e.preventDefault();
+        if(isPlaying) e.preventDefault();
         isTouching = false;
         touchX = null;
     }, {passive: false});
+    // Add touch cancel to prevent stuck states
+    canvas.addEventListener('touchcancel', (e) => {
+        isTouching = false;
+        touchX = null;
+    });
+
     document.addEventListener('keydown', e => {
         if(isPlaying && ['Space', 'ArrowLeft', 'ArrowRight', 'a', 'd'].includes(e.key)){
             e.preventDefault();
@@ -283,7 +291,7 @@ const initGame = () => {
     let waveTimer = 5;
 
     const startGameLoop = () => {
-        player.y = gHeight - 40;
+        player.y = gHeight - 60; // Move player higher up to avoid clip-path cuts
         lastTime = performance.now();
         gameLoop(lastTime);
     };
