@@ -161,23 +161,52 @@ const initGame = () => {
     let animationId;
     const overlay = document.getElementById('game-overlay');
 
-    document.querySelector('.game-container').addEventListener('mouseenter', () => {
+    const startGameAction = (e) => {
+        if(e && e.type === 'touchstart') e.preventDefault();
         if(!isPlaying) {
             isPlaying = true;
             overlay.style.opacity = '0';
             setTimeout(() => overlay.style.display = 'none', 200);
             startGameLoop();
         }
-    });
-    document.querySelector('.game-container').addEventListener('mouseleave', () => {
+    };
+
+    const stopGameAction = () => {
         isPlaying = false;
         overlay.style.display = 'flex';
         setTimeout(() => overlay.style.opacity = '1', 10);
         cancelAnimationFrame(animationId);
-    });
+    };
+
+    document.querySelector('.game-container').addEventListener('mouseenter', startGameAction);
+    document.querySelector('.game-container').addEventListener('mouseleave', stopGameAction);
+    
+    // Touch support for mobile start
+    overlay.addEventListener('touchstart', startGameAction, {passive: false});
 
     const player = { x: gWidth/2, y: gHeight - 40, width: 30, height: 30, vX: 0 };
     const keys = {};
+    let isTouching = false;
+    let touchX = null;
+
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        isTouching = true;
+        const rect = canvas.getBoundingClientRect();
+        touchX = e.touches[0].clientX - rect.left;
+    }, {passive: false});
+    
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        touchX = e.touches[0].clientX - rect.left;
+    }, {passive: false});
+    
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        isTouching = false;
+        touchX = null;
+    }, {passive: false});
     document.addEventListener('keydown', e => {
         if(isPlaying && ['Space', 'ArrowLeft', 'ArrowRight', 'a', 'd'].includes(e.key)){
             e.preventDefault();
@@ -189,7 +218,19 @@ const initGame = () => {
     let lasers = [];
     let enemies = [];
     let particles = [];
+    let stars = [];
     let score = 0;
+    let highScore = localStorage.getItem('vibeHighScore') || 0;
+
+    // Initialize stars
+    for(let i=0; i<100; i++) {
+        stars.push({
+            x: Math.random() * 2000, // Large area to handle resizing
+            y: Math.random() * 2000,
+            speed: 0.5 + Math.random() * 2,
+            size: Math.random() * 2
+        });
+    }
 
     const spawnEnemyWave = () => {
         const rows = 3;
@@ -260,6 +301,13 @@ const initGame = () => {
             waveTimer = 0;
         }
 
+        // Touch Movement and Auto-fire
+        if(isTouching && touchX !== null) {
+            if (touchX < player.x - 15) player.vX -= 2;
+            if (touchX > player.x + 15) player.vX += 2;
+            fireLaser();
+        }
+
         // Player Movement
         if(keys['ArrowLeft'] || keys['a']) player.vX -= 1.5;
         if(keys['ArrowRight'] || keys['d']) player.vX += 1.5;
@@ -271,21 +319,31 @@ const initGame = () => {
         if(player.x < 20) player.x = 20;
         if(player.x > gWidth - 20) player.x = gWidth - 20;
 
-        // Clear Canvas with fade for trail
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        // Black Galaxy Background
+        ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, gWidth, gHeight);
 
-        // Grid background effect
-        ctx.strokeStyle = 'rgba(0, 255, 65, 0.1)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for(let i=0; i<gHeight; i+=50) { ctx.moveTo(0, (i + time*50)%gHeight); ctx.lineTo(gWidth, (i + time*50)%gHeight); }
-        ctx.stroke();
+        // Draw Stars
+        ctx.fillStyle = '#ffffff';
+        stars.forEach(s => {
+            s.y += s.speed;
+            if(s.y > gHeight) {
+                s.y = 0;
+                s.x = Math.random() * gWidth;
+            }
+            if(s.x <= gWidth) {
+                ctx.globalAlpha = 0.5 + Math.random() * 0.5; // Twinkle
+                ctx.fillRect(s.x, s.y, s.size, s.size);
+                ctx.globalAlpha = 1.0;
+            }
+        });
 
-        // Draw Score
-        ctx.font = "18px 'Press Start 2P'";
+        // Draw Score & High Score
+        ctx.font = "14px 'Press Start 2P'";
         ctx.fillStyle = "rgba(0, 255, 65, 0.8)";
         ctx.fillText(`SCORE: ${score}`, 20, 30);
+        ctx.fillStyle = "rgba(0, 243, 255, 0.8)";
+        ctx.fillText(`HI: ${highScore}`, gWidth - 140, 30);
 
         // Draw Player Ship (Galaga Style Pixel Art)
         ctx.save();
@@ -404,6 +462,10 @@ const initGame = () => {
                     enemies.splice(i, 1);
                     lasers.splice(lIdx, 1);
                     score += (e.type === 'fast' ? 200 : 100);
+                    if(score > highScore) {
+                        highScore = score;
+                        localStorage.setItem('vibeHighScore', highScore);
+                    }
                     break;
                 }
             }

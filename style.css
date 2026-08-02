@@ -182,7 +182,9 @@ section {
 .game-container {
     width: 100%;
     max-width: 900px;
-    height: 550px;
+    height: 60vh;
+    min-height: 400px;
+    max-height: 600px;
     border: 2px solid var(--crimson);
     background: rgba(0, 0, 0, 0.9);
     position: relative;
