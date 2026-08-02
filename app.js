@@ -216,7 +216,7 @@ const initGame = () => {
     });
 
     document.addEventListener('keydown', e => {
-        if(isPlaying && ['Space', 'ArrowLeft', 'ArrowRight', 'a', 'd'].includes(e.key)){
+        if(isPlaying && (e.code === 'Space' || ['ArrowLeft', 'ArrowRight', 'a', 'd'].includes(e.key))){
             e.preventDefault();
         }
         keys[e.key] = true;
@@ -264,7 +264,7 @@ const initGame = () => {
     };
 
     document.addEventListener('keydown', e => {
-        if((e.code === 'Space' || e.key === 'w' || e.key === 'ArrowUp') && isPlaying) {
+        if(e.code === 'Space' && isPlaying) {
             fireLaser();
         }
     });
