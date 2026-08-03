@@ -5,107 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vibe Coding Lab | Taller de IA, GitHub y Vercel</title>
     <meta name="description" content="Taller virtual de 'vibe coding' para chicos de 12 a 15 años. Aprende a crear páginas web y videojuegos con Inteligencia Artificial utilizando GitHub, Vercel y Gemini.">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- CRT Overlays -->
-    <div class="crt-overlay"></div>
-    <div class="scanlines"></div>
+    <div class="grain"></div>
     <div class="vignette"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
 
-    <!-- WebGL Background -->
     <canvas id="webgl-canvas"></canvas>
 
+    <div class="telemetry" id="telemetry">SYS.STATUS <span class="ok">● ONLINE</span></div>
+
     <div id="app">
-        <!-- HERO SECTION -->
+
+        <!-- ============================================================
+             HERO
+             ============================================================ -->
         <section class="hero">
-            <h1 class="text-glitch">VIBE CODING LAB</h1>
-            <p class="subtitle">DE CONSUMIDOR A CREADOR.<br><br>Aprende a programar videojuegos y páginas web inmersivas con Inteligencia Artificial, Vercel y GitHub.</p>
-            <button class="btn-neon" onclick="document.getElementById('demo').scrollIntoView({behavior: 'smooth'})">INICIAR SISTEMA</button>
+            <p class="eyebrow load-in" style="--d:0s">// SISTEMA_INICIADO</p>
+            <h1 class="hero-title load-in" style="--d:.12s">VIBE CODING LAB</h1>
+            <p class="hero-subtitle load-in" style="--d:.24s">
+                De consumidor a creador.<br>
+                Aprendé a programar páginas web y videojuegos inmersivos usando Inteligencia Artificial, GitHub y Vercel.
+            </p>
+            <button class="btn-primary load-in" style="--d:.36s" onclick="document.getElementById('demo').scrollIntoView({behavior: 'smooth'})">
+                Iniciar sistema
+            </button>
         </section>
-        
-        <!-- INTERACTIVE DEMO -->
+
+        <!-- ============================================================
+             INTERACTIVE DEMO
+             ============================================================ -->
         <section class="demo" id="demo">
-            <h2 class="section-title" style="color: var(--cyan); text-shadow: 0 0 15px var(--cyan);">ENTRENAMIENTO SIMULADO</h2>
-            <div class="game-container">
-                <canvas id="game-canvas"></canvas>
-                <div class="game-overlay" id="game-overlay">
-                    <h3>HOVER / TAP TO PLAY</h3>
-                    <p>A D / TOUCH - Mover y Disparar</p>
+            <p class="eyebrow reveal">// 01 — ENTRENAMIENTO</p>
+            <h2 class="section-title reveal">Simulador de Combate</h2>
+            <p class="section-sub reveal">Una probada de lo que vas a construir en el taller: un juego arcade corriendo 100% en JavaScript.</p>
+
+            <div class="game-frame reveal">
+                <div class="game-container">
+                    <canvas id="game-canvas"></canvas>
+                    <div class="game-overlay" id="game-overlay">
+                        <h3>TOCÁ PARA JUGAR</h3>
+                        <p>A / D o ← → para mover — ESPACIO para disparar</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- VALUE PROPOSITION / FEATURES -->
+        <!-- ============================================================
+             FEATURES
+             ============================================================ -->
         <section class="features">
-            <h2 class="section-title" style="color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green);">ARSENAL TECNOLÓGICO</h2>
+            <p class="eyebrow reveal">// 02 — ARSENAL</p>
+            <h2 class="section-title reveal">Arsenal Tecnológico</h2>
+
             <div class="cards-grid">
-                <div class="card">
+                <div class="card reveal">
                     <div class="card-icon">🧠</div>
-                    <h3>GEMINI AI</h3>
-                    <p>Potencia tu código con inteligencia artificial avanzada. Escribe componentes y mecánicas de juego en segundos.</p>
+                    <h3>Gemini AI</h3>
+                    <p>Potenciá tu código con inteligencia artificial avanzada. Escribí componentes y mecánicas de juego en segundos.</p>
                 </div>
-                <div class="card">
+                <div class="card reveal">
                     <div class="card-icon">🐙</div>
-                    <h3>GITHUB</h3>
-                    <p>Controla versiones, guarda tu código en la nube y colabora como un ingeniero de software profesional.</p>
+                    <h3>GitHub</h3>
+                    <p>Controlá versiones, guardá tu código en la nube y colaborá como un ingeniero de software profesional.</p>
                 </div>
-                <div class="card">
+                <div class="card reveal">
                     <div class="card-icon">▲</div>
-                    <h3>VERCEL</h3>
-                    <p>Despliega tus creaciones web a nivel global en segundos. Comparte tus proyectos con un solo link.</p>
+                    <h3>Vercel</h3>
+                    <p>Desplegá tus creaciones web a nivel global en segundos. Compartí tus proyectos con un solo link.</p>
                 </div>
             </div>
         </section>
-        
-        <!-- PRICING / COMMERCIAL -->
+
+        <!-- ============================================================
+             PRICING
+             ============================================================ -->
         <section class="pricing" id="pricing">
-            <h2 class="section-title" style="color: var(--crimson); text-shadow: 0 0 15px var(--crimson);">ACCESO AL LAB</h2>
-            <div class="pricing-box">
-                <h3 style="font-family: 'Orbitron'; font-size: 2rem; color: #fff; font-weight: 900; letter-spacing: 2px;">TALLER VIRTUAL INTENSIVO</h3>
-                <div class="price">35,000 CRC</div>
-                <div class="deposit">Anticipo para reservar: 17,500 CRC (50%)</div>
-                <p style="font-family: 'Orbitron'; font-size: 1.1rem; line-height: 1.8; color: #ddd; max-width: 500px; margin: 0 auto;">
+            <p class="eyebrow reveal">// 03 — ACCESO</p>
+            <h2 class="section-title reveal">Acceso al Lab</h2>
+
+            <div class="pricing-box reveal">
+                <span class="pricing-label">Taller virtual intensivo</span>
+                <div class="price"><span class="currency">₡</span>35,000</div>
+                <div class="deposit">Anticipo para reservar · ₡17,500 (50%)</div>
+                <p class="pricing-desc">
                     Exclusivo para jóvenes de 12 a 15 años. Cupos ultralimitados.<br>
                     Incluye acceso a grabaciones, comunidad privada y certificado de misiones completadas.
                 </p>
             </div>
         </section>
 
-        <!-- PRE-REGISTRATION FORM -->
+        <!-- ============================================================
+             CONTACT / PRE-REGISTRATION
+             ============================================================ -->
         <section class="contact" id="contact">
-            <h2 class="section-title" style="color: var(--cyan); text-shadow: 0 0 15px var(--cyan);">PRE-INSCRIPCIÓN</h2>
-            <div class="form-container">
+            <p class="eyebrow reveal">// 04 — TRANSMISIÓN</p>
+            <h2 class="section-title reveal">Pre-inscripción</h2>
+
+            <div class="form-container reveal">
                 <form id="contact-form">
                     <div class="form-group">
-                        <label for="name">NOMBRE DEL CADETE</label>
-                        <input type="text" id="name" required placeholder="Ingresa tu nombre completo" autocomplete="off">
+                        <label for="name">Nombre del cadete</label>
+                        <input type="text" id="name" required placeholder="Ingresá tu nombre completo" autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label for="email">TRANSMISIÓN (EMAIL)</label>
+                        <label for="email">Transmisión (email)</label>
                         <input type="email" id="email" required placeholder="correo@ejemplo.com" autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label for="whatsapp">ENLACE DIRECTO (WHATSAPP)</label>
+                        <label for="whatsapp">Enlace directo (WhatsApp)</label>
                         <input type="tel" id="whatsapp" required placeholder="+506 8888-8888" autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label for="theme">ESTILO VISUAL DEL TALLER</label>
+                        <label for="theme">Estilo visual del taller</label>
                         <select id="theme">
                             <option value="cyberpunk">Cyberpunk Neon</option>
                             <option value="synthwave">Synthwave Retro</option>
                             <option value="arcade">8-Bit Arcade</option>
                         </select>
                     </div>
-                    <button type="submit" id="submit-btn" class="submit-btn">ASEGURAR MI LUGAR (17,500 CRC)</button>
+                    <button type="submit" id="submit-btn" class="submit-btn">Asegurar mi lugar — ₡17,500</button>
                 </form>
             </div>
         </section>
+
     </div>
-    
-    <!-- Scripts -->
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="app.js"></script>
 </body>
